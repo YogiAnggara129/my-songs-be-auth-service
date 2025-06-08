@@ -1,14 +1,16 @@
+import 'reflect-metadata';
 import { Router } from 'express';
 import { AuthController } from '../controllers/AuthController';
-import { UserRepository } from '../../infrastructure/repositories/UserRepository';
-import { AuthService } from '../../application/services/AuthService';
+import container from '../../infrastructure/container';
+import TYPES from '../../infrastructure/types';
 
 const router = Router();
-const userRepo = new UserRepository();
-const authService = new AuthService(userRepo);
-const authController = new AuthController(authService);
+const authController = container.get<AuthController>(TYPES.AuthController);
 
 router.post('/register', authController.register);
 router.post('/login', authController.login);
+router.post('/refresh-token', authController.refreshToken);
+router.post('/logout', authController.logout);
+router.get('/me', authController.getUser);
 
 export default router;

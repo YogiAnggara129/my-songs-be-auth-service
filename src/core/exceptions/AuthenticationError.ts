@@ -1,6 +1,6 @@
-import ClientError from './ClientError';
+import { ClientError } from './ClientError';
 
-export default class AuthenticationError extends ClientError {
+export class AuthenticationError extends ClientError {
   constructor(message: string) {
     super(message, 401);
     this.name = 'AuthenticationError';

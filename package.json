@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "esbuild src/index.ts --bundle --platform=node --format=cjs --external:bcrypt --outfile=dist/index.js",
     "start": "node dist/index.js",
     "format": "prettier --write .",
     "typeorm": "typeorm-ts-node-esm --dataSource ./src/infrastructure/db/data-source.ts",
@@ -14,7 +14,6 @@
   "author": "Yogi",
   "license": "ISC",
   "description": "A simple authentication service using TypeScript, Express, and PostgreSQL.",
-  "type": "module",
   "dependencies": {
     "bcrypt": "^6.0.0",
     "dotenv": "^16.5.0",
@@ -32,6 +31,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.30",
     "@types/uuid": "^10.0.0",
+    "esbuild": "^0.25.5",
     "prettier": "^3.5.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.4",

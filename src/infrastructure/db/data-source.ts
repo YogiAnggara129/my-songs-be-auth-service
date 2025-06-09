@@ -1,6 +1,9 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
+import * as entities from './models';
+import * as migrations from './migrations';
 
+console.log('__dirname = ' + __dirname);
 export const AppDataSource = new DataSource({
   type: (process.env.DB_TYPE as 'postgres' | 'mysql' | 'sqlite') || 'postgres',
   host: process.env.DB_HOST || 'localhost',
@@ -10,6 +13,8 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_NAME || 'auth_service',
   synchronize: process.env.DB_SYNC === 'true',
   logging: process.env.NODE_ENV !== 'production',
-  entities: ['src/infrastructure/db/models/**/*.ts'],
-  migrations: ['src/infrastructure/db/migrations/**/*.ts'],
+  entities: Object.values(entities),
+  //   entities: [__dirname + '/infrastructure/db/models'],
+  migrations: Object.values(migrations),
+  //   migrations: [__dirname + '/infrastructure/db/migrations/**'],
 });

@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { IPasswordHasher } from '../../application/security/IPasswordHasher';
 
 export class BcryptPasswordHasher implements IPasswordHasher {

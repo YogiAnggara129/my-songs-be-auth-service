@@ -4,8 +4,8 @@ import { LoginSchema } from '../../domain/entities/LoginEntity';
 import { RegisterSchema } from '../../domain/entities/RegisterEntity';
 import InvariantError from '../../core/exceptions/InvariantError';
 import { inject, injectable } from 'inversify';
-import { expressjwt, Request as JWTRequest } from 'express-jwt';
 import TYPES from '../../infrastructure/types';
+import { AuthenticationError } from '../../core/exceptions/AuthenticationError';
 
 @injectable()
 export class AuthController {
@@ -37,9 +37,10 @@ export class AuthController {
     }
   };
 
-  refreshToken = async (req: JWTRequest, res: Response, next: NextFunction) => {
+  refreshToken = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const id = req.auth?.id;
+      const id = req.headers['x-user-id'] as string | undefined;
+      if (!id) throw new AuthenticationError('Invalid credentials');
       const token = req.body?.token;
       if (!token) {
         throw new InvariantError('Refresh token is required');
@@ -51,26 +52,24 @@ export class AuthController {
     }
   };
 
-  getUser = async (req: JWTRequest, res: Response, next: NextFunction) => {
+  getUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const id = req.auth?.id;
-      if (!id) {
-        throw new InvariantError('Token is required');
-      }
-      const user = await this.authService.getUser(id);
+      const id = req.headers['x-user-id'] as string | undefined;
+      if (!id) throw new AuthenticationError('Invalid credentials');
+      const user = await this.authService.getUser(id!);
       res.json(user);
     } catch (err) {
       next(err);
     }
   };
 
-  logout = async (req: JWTRequest, res: Response, next: NextFunction) => {
+  logout = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const id = req.auth?.id;
+      const id = req.headers['x-user-id'] as string | undefined;
       if (!id) {
         throw new InvariantError('Token is required');
       }
-      await this.authService.logout(req.auth?.id);
+      await this.authService.logout(id);
       res.status(204).send({
         message: 'Logged out successfully',
       });

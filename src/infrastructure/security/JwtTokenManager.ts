@@ -34,17 +34,9 @@ export class JwtTokenManager implements ITokenManager {
 
   async verifyRefreshToken(token: string): Promise<void> {
     try {
-      jwt.verify(token, this.refreshTokenSecret);
+      jwt.verify(token, this.refreshTokenSecret, { algorithms: [this.algorithm] });
     } catch (err) {
       throw new AuthenticationError('Invalid refresh token');
-    }
-  }
-
-  async decodePayload(token: string): Promise<any> {
-    try {
-      return jwt.verify(token, this.accessTokenSecret);
-    } catch (err) {
-      throw new AuthenticationError('Invalid access token');
     }
   }
 }
